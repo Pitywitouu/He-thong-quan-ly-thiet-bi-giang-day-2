@@ -1,0 +1,47 @@
+from __future__ import annotations
+
+from models.teaching_device import TeachingDevice
+from models.device_status import DeviceStatus
+
+
+class WirelessMicrophone(TeachingDevice):
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        storage_location: str,
+        battery_level: int,
+        signal_quality: int,
+    ) -> None:
+        super().__init__(id, name, storage_location)
+        if not (0 <= battery_level <= 100):
+            raise ValueError(f"Mức pin phải trong khoảng 0 đến 100, nhận được: {battery_level}")
+        if not (0 <= signal_quality <= 100):
+            raise ValueError(f"Chất lượng tín hiệu phải trong khoảng 0 đến 100, nhận được: {signal_quality}")
+
+        self._battery_level: int = battery_level
+        self._signal_quality: int = signal_quality
+
+    @property
+    def battery_level(self) -> int:
+        return self._battery_level
+
+    @property
+    def signal_quality(self) -> int:
+        return self._signal_quality
+
+    def is_ready_for_use(self) -> bool:
+        return (
+            self.status == DeviceStatus.AVAILABLE
+            and self._battery_level >= 30
+            and self._signal_quality >= 40
+        )
+
+    def get_default_priority_score(self) -> float:
+        return (self._battery_level + self._signal_quality) / 2.0
+
+    def __repr__(self) -> str:
+        return (
+            f"WirelessMicrophone(id='{self.id}', name='{self.name}', "
+            f"battery={self._battery_level}%, signal={self._signal_quality}%, status='{self.status}')"
+        )
