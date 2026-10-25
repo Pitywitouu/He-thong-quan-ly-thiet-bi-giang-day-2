@@ -1,3 +1,8 @@
+"""
+MSSV: 202418985
+Họ tên: Nguyễn Phú Thái
+"""
+
 from __future__ import annotations
 import sys
 
